@@ -29,6 +29,11 @@ class GlassContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectiveOpacity =
+        isDark ? opacity : opacity * 3; // Higher opacity in light mode
+    final borderOpacity = isDark ? 0.3 : 0.6;
+
     return Container(
       width: width,
       height: height,
@@ -39,21 +44,21 @@ class GlassContainer extends StatelessWidget {
         borderRadius: 20,
         blur: blur,
         alignment: Alignment.bottomCenter,
-        border: 2,
+        border: isDark ? 2 : 1.5,
         linearGradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            color.withOpacity(opacity),
-            color.withOpacity(opacity / 2),
+            color.withOpacity(effectiveOpacity),
+            color.withOpacity(effectiveOpacity / 2),
           ],
         ),
         borderGradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            color.withOpacity(0.5),
-            color.withOpacity(0.1),
+            color.withOpacity(borderOpacity),
+            color.withOpacity(borderOpacity * 0.5),
           ],
         ),
         child: Material(

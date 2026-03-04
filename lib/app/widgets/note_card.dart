@@ -23,40 +23,50 @@ class NoteCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColorOpacity = isDark ? 0.15 : 0.25;
 
-    return GlassContainer(
+    return Container(
       width: double.infinity,
-      height: 140,
-      padding: const EdgeInsets.all(16),
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
-      onTap: onTap,
-      child: InkWell(
-        onLongPress: onLongPress,
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: _hexToColor(note.color ?? '#FFE4B5').withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              ),
+      margin: const EdgeInsets.only(bottom: 12),
+      child: GlassContainer(
+        width: double.infinity,
+        height: 150,
+        padding: EdgeInsets.zero,
+        margin: EdgeInsets.zero,
+        child: InkWell(
+          onTap: onTap,
+          onLongPress: onLongPress,
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: _hexToColor(note.color ?? '#FFE4B5')
+                  .withOpacity(cardColorOpacity),
+              borderRadius: BorderRadius.circular(20),
             ),
-            Column(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
                             note.title,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.titleLarge,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
                           ),
                           if (showCategory && note.category != null)
                             Padding(
@@ -76,10 +86,11 @@ class NoteCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8),
-                      child: GestureDetector(
-                        onTap: onPinTap,
+                    const SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: onPinTap,
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
                         child: Icon(
                           note.isPinned
                               ? Icons.push_pin
@@ -94,28 +105,37 @@ class NoteCard extends StatelessWidget {
                                   : AppTheme.lightTextSecondary),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  note.content,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodyMedium,
+                const SizedBox(height: 10),
+                Expanded(
+                  child: Text(
+                    note.content,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          height: 1.4,
+                        ),
+                  ),
                 ),
-                const Spacer(),
+                const SizedBox(height: 8),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      AppHelper.formatDateTime(note.updatedAt),
-                      style: Theme.of(context).textTheme.bodySmall,
+                    Expanded(
+                      child: Text(
+                        AppHelper.formatDateTime(note.updatedAt),
+                        style: Theme.of(context).textTheme.bodySmall,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                    if (note.isMarkdown)
+                    if (note.isMarkdown) ...[
+                      const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 2),
+                            horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: (isDark
                                   ? AppTheme.darkPrimary
@@ -123,17 +143,18 @@ class NoteCard extends StatelessWidget {
                               .withOpacity(0.2),
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: Text(
+                        child: const Text(
                           'MD',
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontSize: 10, fontWeight: FontWeight.w600),
                         ),
                       ),
+                    ],
                   ],
                 ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );
