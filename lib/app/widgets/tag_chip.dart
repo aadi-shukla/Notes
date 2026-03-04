@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:notes/app/widgets/glass_container.dart';
 
 class TagChip extends StatelessWidget {
   final String label;
@@ -19,28 +18,68 @@ class TagChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassContainer(
-      width: double.infinity,
-      height: 32,
-      padding: EdgeInsets.only(
-        left: 12,
-        right: onDelete != null ? 4 : 12,
-        top: 4,
-        bottom: 4,
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Container(
+      height: 36,
+      margin: const EdgeInsets.only(right: 8, bottom: 8),
+      decoration: BoxDecoration(
+        color: isDark
+            ? Colors.white.withOpacity(0.1)
+            : Colors.black.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withOpacity(0.2)
+              : Colors.black.withOpacity(0.15),
+          width: 1,
+        ),
       ),
-      margin: const EdgeInsets.only(right: 8),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(label, style: Theme.of(context).textTheme.bodySmall),
-          if (onDelete != null) ...[
-            const SizedBox(width: 4),
-            GestureDetector(
-              onTap: onDelete,
-              child: const Icon(Icons.close, size: 16),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(20),
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: 16,
+              right: onDelete != null ? 8 : 16,
+              top: 8,
+              bottom: 8,
             ),
-          ],
-        ],
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  label,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+                ),
+                if (onDelete != null) ...[
+                  const SizedBox(width: 8),
+                  GestureDetector(
+                    onTap: onDelete,
+                    child: Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? Colors.white.withOpacity(0.2)
+                            : Colors.black.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.close,
+                        size: 14,
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
